@@ -70,7 +70,19 @@ Assign permission to entities you trust, **normally not for physicall users**, b
 
 ## EC2
 
-#### Classic Ports to know
+#### Security Group
+
+**security group** works as "firewall" to **allow** rules, it is **outside** of EC2 instance
+
+**Inbound** traffic is blokced by default
+
+**outbound** traffic is authorized by default
+
+Referencing security groups
+
+<img src="images/image-20211111162537209.png" alt="image-20211111162537209" style="zoom:50%;" />
+
+##### common ports
 
 • 22 = SSH (Secure Shell) - log into a Linux instance
 
