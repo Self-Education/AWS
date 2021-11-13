@@ -103,8 +103,8 @@ Referencing security groups
   + Reserved Instances: fixed type instance
   + Convertible Reserved Instance: flexible instances types
   + Scheduled .. : specific period of time, ex: only use every Saturday from 1 am to 2 am 
-+ **Spot**: changes over time, you may lose it.
-+ **Dedicated Hosts**: EC2 Dedicated Host is a physical server with EC2 instance capacity fully dedicated to you use. **compliance requirement** and **use your existing server-bound software license**
++ **Spot**: changes over time, you may lose it. useful for workloads that are resilient to failure, MOST cost-efficient
++ **Dedicated Hosts**: EC2 Dedicated Host is a physical server with EC2 instance capacity fully dedicated to you use. **compliance requirement** and **use your existing server-bound software license**, it gives you a lot of access to the **underlying** hardware compared to **Dedicated Hosts**
 + **Dedicated Instance**: instance runningon the hardware that is dedicated to you
 
 
