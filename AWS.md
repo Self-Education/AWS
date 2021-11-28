@@ -124,7 +124,7 @@ Referencing security groups
 
 #### EC2 Instance Store
 
-+ Local
++ Local (compared to EBS which is network drive)
 + higher performance, better I/O performance
 + not for long term storage, it loses all  storage if instance is terminated
 + better to back up
@@ -132,8 +132,25 @@ Referencing security groups
 #### EFS
 
 + Elastic File System
-+ can be mount on **multiple EC2** at the same time
+
++ can be mount on **multiple EC2** at the same time, **shared** file system
+
 + only with **Linux system**, but with **multi-AZ**
+
+  <img src="images/image-20211113222137115.png" alt="image-20211113222137115" style="zoom:50%;" />
+
++ **EFS-IA**: storage class for files that are not accessed every day to optimize the cost. User can enable the EFS-IA **policy**, so that EFS will automatically move the file to the EFS-IA based on the last date the files were accessed
+
+#### EFS vs. EBS
+
+<img src="images/image-20211113222241367.png" alt="image-20211113222241367" style="zoom:50%;" />
+
+#### Amazon FSx 
+
++ **third party** high performance storage, alternative of EFS and EBS
+
++ FSx for lustre (linux)
++ Fsx for windows server file system (network file syste for windows system)
 
 ## EC2 AMI
 
@@ -141,11 +158,11 @@ Referencing security groups
 + it is a customization of an EC2 instance, we can add our own software, configuration, operating system,...
 + it **provides requirements** to set up and launch EC2, more like lock.json file in node.js, like a **template**
 + it created for specific region and can be copied to other region
-+ Example: we have a instance A, then we generate a AMI (more like template requirements.txt), and create a new instance B based on AMI, so two instances A and B share same configuraion
++ Example: we have a instance A, then we generate a AMI (more like template requirements.txt), and create a new instance B based on AMI, so two instances A and B share same configuraion  
 
-#### EC2 Image Builder
+#### EC2 Image Builder (pipeline)
 
-it automate the creation, maintain, validate and test EC2 AMIs. Free and can be run on a schedule
+it automate the creation, maintain, validate and test EC2 AMIs. Free and <u>can be run on a schedule</u>
 
 ![image-20210327135700179](images/image-20210327135700179.png)
 
@@ -155,13 +172,13 @@ it automate the creation, maintain, validate and test EC2 AMIs. Free and can be 
 
 #### Scalability & High Availability
 
-* **scalability**: an application/system can handle greater loads by **adapting**. Ability to accommodate a larget load by making the hardware strong (scale up), or by adding numbers (scale out)
+* **scalability**: an application/system can handle greater loads by **adapting**. Ability to accommodate a larger load by making the hardware strong (scale up), or by adding numbers (scale out)
 * two types of scalability: 
-  * <u>vertical</u>: increase size of instance
-  * <u>Horizontal</u>: sames as **Elasticity**, increase number of instances, distributed system
-* **Elasticity**: once a system is scalable, elasticity means that there will be some "au**to-scaling**" so that they system can scaled based on the load
+  * <u>**vertical**</u>: increase size of instance
+  * <u>**Horizontal**</u>: similar as **Elasticity**, increase number of instances, **distributed** system
+* **Elasticity**: once a system is scalable, elasticity means that there will be some "**auto-scaling**" so that the system can scaled based on the load
 * **Agility**: not related to scalability, reduce the time to make resources available to your developer from weeks to just minutes
-* **High availability** : running application at least two different AZ, in case one of the AZ is down.
+* **High availability** : running application at least two different AZ (**replications**), in case one of the AZ is down. Availability: the probability  that a system does not fail when it needs to be used
 
 #### Loading balancing
 
@@ -178,9 +195,20 @@ forward traffic to multiple servers (EC2 instance) across **multiple** A zones
 + IP
 + Classic
 
-#### Auto Scaling Group
+#### Auto Scaling Group (ASG)
 
-Scale out to match an increased load and scale in to match a decreased load, **automatically** register new instances to a load balancer, **replace** unhealthy instances
+Scale out to match an increased load and scale in to match a decreased load, **automatically** register new instances to a load balancer, **replace** <u>unhealthy</u> instances
+
+
+
+Scaling strategy:
+
++ manual
++ dynamic
+  + Simple/step scaling: watch dog
+  + target trace: CPU, number of requests
+  + Scheduled, based on the known usage patterns
++ Predictive scaling, machine learning to forecast the load
 
 ![image-20210327151700421](images/image-20210327151700421.png)
 
@@ -209,7 +237,7 @@ roll back and back up
 
 #### S3 Access Log
 
-Another bucket to store all logs of the bucket
+**Another bucket** to store all logs of the bucket
 
 #### S3 Replication
 
@@ -224,20 +252,26 @@ Object before enabling replication is not replicated
 Durability, availability, it can be chose under "**storage class**" section when upload file.
 
 + **Standard**: general purpose
-+ **Standard-Infrequent Access**: less frequent access, but low latency when access, lower cost, but charge retrieval fee. good for back up
-+ **Intelligent -tiering**: low latency and better performance than S3 standard, **cost-optimized** by automatically moving between two tiers, if object is access frequently, it move objects to standard tier, other wise to infrequent tier
-+ **One zone**: only store in one AZ, less resilience to disaster
++ **Standard-Infrequent Access (IA)**: less frequent access, but low latency when access, lower cost, but charge retrieval fee. good for back up
++ **Intelligent-tiering**: low latency and better performance than S3 standard, **cost-optimized** by automatically moving between two tiers, if object is access frequently, it move objects to standard tier, other wise to infrequent tier
++ **One zone IA**: only store in one AZ, less resilience to disaster
 + **Glacier**: meaning object stored there **frozen for long time**, low cost for long term archiving/back up
 + **Glacier Deep Archive**: cheapest, but even longer time needed to retrieve.
+
+![image-20211128113921563](images/image-20211128113921563.png)
 
 #### Object Lock & Glacier Vault Lock
 
 + **Object lock**: adopt WORM (write once read many) model, block an object version deletion for a specified amount of time
 + **vault lock**: same as object lokc, the lock policy preventing future edits, **no longer** be changed
 
+#### S3 Encryption
+
+Server side encryption vs. Client side encryption
+
 #### Snow Family - large scale data transport
 
-Highly-secure, protable **off line** **devices** to collect an nd process data at the edge and **migrate** data into and out of AWS. 
+Highly-secure, protable **off line** **devices** to collect and process data at the edge and **migrate** data into and out of AWS. 
 
 if it takes more than a week to transfer, use snowball device
 
@@ -258,7 +292,7 @@ where limited internet or computing access: preprocess data, machine learning. T
 
 #### AWS Storage Gateway
 
-a **bridge** between **on-premise** data and **cloud data**, alow on-premises to seamlessly use AWS cloud
+a **bridge** between **on-premise** data and **cloud data**, allow on-premises to seamlessly use AWS cloud
 
 ![image-20210327185513112](images/image-20210327185513112.png)
 
